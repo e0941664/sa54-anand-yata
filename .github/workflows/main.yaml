@@ -1,43 +1,47 @@
-name: My first workflow
-on:
- push:
+name: My First Workflow
+on: 
+  push: 
     branches:
     - "master"
 jobs:
   echo_the_date:
     runs-on: ubuntu-latest
-    env: 
-      OPENWEATHERMAP_KEY: ${{ secrets.openweathermap_key}}
     steps:
-    - name: echo the date
-      run: echo "The current time and date is $(date)"
+    - name: echo the date 
+      run: echo "The current time and date is $(date)" 
     - name: echo the current branch
-      run: echo ${{ github.ref_name }}  
-
-  test_and_deploy:  
-    runs-on: ubuntu-latest 
+      run: echo ${{ github.ref_name }}
+  
+  test_and_deploy:
+    runs-on: ubuntu-latest
+    env:
+      OPENWEATHERMAP_KEY: ${{ secrets.openweathermap_key }}
     steps:
-    - name: Setup JDK 17
+    # https://github.com/marketplace/actions/setup-java-jdk
+    - name: Setup JDK 17 
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
-        
-    - name: Set up Maven
+
+    # https://github.com/marketplace/actions/setup-maven
+    - name: Setup maven
       uses: stCarolas/setup-maven@v4.3
       with:
         maven-version: 3.8.2
 
+    # https://github.com/marketplace/actions/checkout
     - name: Checkout the source
       uses: actions/checkout@v3
 
-    - name: Run Test
+    - name: Run test
       run: mvn clean test
 
+    # https://github.com/marketplace/actions/deploy-to-heroku
     - name: Deploy to Heroku
-      uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+      uses: akhileshns/heroku-deploy@v3.12.12 
       with:
-        heroku_api_key: ${{secrets.heroku_api_key}}
-        heroku_app_name: ${{secrets.heroku_app_name}} #Must be unique in Heroku
-        heroku_email: ${{secrets.heroku_email}}
+        heroku_api_key: ${{ secrets.heroku__api_key }}
+        heroku_app_name: ${{ secrets.heroku_app_name }}
+        heroku_email: ${{ secrets.heroku_email }}
         branch: ${{ github.ref_name }}
